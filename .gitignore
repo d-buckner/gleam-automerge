@@ -1,0 +1,6 @@
+/_build/
+/deps/
+/priv/native/
+native/*/target/
+*.ez
+erl_crash.dump
