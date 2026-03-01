@@ -5,7 +5,7 @@ defmodule AutomergeNif do
     otp_app: :automerge,
     crate: :automerge_nif,
     base_url:
-      "https://github.com/YOUR_USERNAME/gleam-automerge/releases/download/v#{@version}",
+      "https://github.com/d-buckner/gleam-automerge/releases/download/v#{@version}",
     version: @version,
     targets: ~w[
       x86_64-unknown-linux-gnu
