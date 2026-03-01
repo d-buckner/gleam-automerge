@@ -1,6 +1,6 @@
-use automerge::sync;
+use automerge::sync::{self, SyncDoc};
 use automerge::{AutoCommit, AutoSerde};
-use rustler::{Binary, Encoder, Env, NifResult, OwnedBinary, ResourceArc, Term};
+use rustler::{Binary, Encoder, Env, OwnedBinary, ResourceArc, Term};
 use std::sync::Mutex;
 
 pub struct DocResource(pub Mutex<AutoCommit>);
@@ -67,26 +67,53 @@ fn doc_get_json(doc: ResourceArc<DocResource>) -> String {
 
 #[rustler::nif]
 fn sync_state_new() -> ResourceArc<SyncStateResource> {
-    unimplemented!()
+    ResourceArc::new(SyncStateResource(Mutex::new(sync::State::new())))
 }
 
+// Returns `{some, binary}` or `none` — Gleam's Option(BitArray) encoding.
 #[rustler::nif]
 fn generate_sync_message<'a>(
     env: Env<'a>,
     doc: ResourceArc<DocResource>,
     state: ResourceArc<SyncStateResource>,
 ) -> Term<'a> {
-    let _ = (env, doc, state);
-    unimplemented!()
+    let mut doc = doc.0.lock().unwrap();
+    let mut state = state.0.lock().unwrap();
+    // Scope the SyncWrapper so its mutable borrow of doc ends before we encode.
+    let maybe_msg: Option<sync::Message> = { doc.sync().generate_sync_message(&mut *state) };
+    match maybe_msg {
+        Some(msg) => {
+            let bytes: Vec<u8> = msg.encode();
+            let mut owned = OwnedBinary::new(bytes.len()).unwrap();
+            owned.as_mut_slice().copy_from_slice(&bytes);
+            let bin = Binary::from_owned(owned, env);
+            (some(), bin).encode(env)
+        }
+        None => none().encode(env),
+    }
 }
 
+// Returns `{ok, <<>>}` or `{error, String}` — Gleam's Result(BitArray, String) encoding.
 #[rustler::nif(schedule = "DirtyCpu")]
 fn receive_sync_message<'a>(
     env: Env<'a>,
     doc: ResourceArc<DocResource>,
     state: ResourceArc<SyncStateResource>,
     msg: Binary<'a>,
-) -> NifResult<Binary<'a>> {
-    let _ = (env, doc, state, msg);
-    unimplemented!()
+) -> Term<'a> {
+    let mut doc = doc.0.lock().unwrap();
+    let mut state = state.0.lock().unwrap();
+    let message = match sync::Message::decode(msg.as_slice()) {
+        Ok(m) => m,
+        Err(e) => return (error(), e.to_string()).encode(env),
+    };
+    // Scope the SyncWrapper so its mutable borrow of doc ends before we encode.
+    let result: Result<(), _> = { doc.sync().receive_sync_message(&mut *state, message) };
+    match result {
+        Ok(_) => {
+            let owned = OwnedBinary::new(0).unwrap();
+            (ok(), Binary::from_owned(owned, env)).encode(env)
+        }
+        Err(e) => (error(), e.to_string()).encode(env),
+    }
 }
