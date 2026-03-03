@@ -1,4 +1,4 @@
-import automerge
+import gleam_automerge as automerge
 import gleam/bit_array
 import gleam/option
 import gleeunit
