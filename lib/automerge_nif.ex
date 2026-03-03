@@ -2,7 +2,7 @@ defmodule AutomergeNif do
   @version Mix.Project.config()[:version]
 
   use RustlerPrecompiled,
-    otp_app: :automerge,
+    otp_app: :gleam_automerge,
     crate: :automerge_nif,
     base_url:
       "https://github.com/d-buckner/gleam-automerge/releases/download/v#{@version}",

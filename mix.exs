@@ -1,4 +1,4 @@
-defmodule Automerge.MixProject do
+defmodule GleamAutomerge.MixProject do
   use Mix.Project
 
   @version "0.1.0"
@@ -6,12 +6,12 @@ defmodule Automerge.MixProject do
 
   def project do
     [
-      app: :automerge,
+      app: :gleam_automerge,
       version: @version,
       elixir: "~> 1.15",
       compilers: [:gleam] ++ Mix.compilers(),
       erlc_paths: erlc_paths(Mix.env()),
-      erlc_include_path: "build/dev/erlang/automerge/include",
+      erlc_include_path: "build/dev/erlang/gleam_automerge/include",
       prune_code_paths: false,
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -21,13 +21,13 @@ defmodule Automerge.MixProject do
   end
 
   defp erlc_paths(:test) do
-    ["build/dev/erlang/automerge/_gleam_artefacts",
-     "build/dev/erlang/automerge/build",
-     "build/dev/erlang/automerge_test/_gleam_artefacts"]
+    ["build/dev/erlang/gleam_automerge/_gleam_artefacts",
+     "build/dev/erlang/gleam_automerge/build",
+     "build/dev/erlang/gleam_automerge_test/_gleam_artefacts"]
   end
   defp erlc_paths(_) do
-    ["build/dev/erlang/automerge/_gleam_artefacts",
-     "build/dev/erlang/automerge/build"]
+    ["build/dev/erlang/gleam_automerge/_gleam_artefacts",
+     "build/dev/erlang/gleam_automerge/build"]
   end
 
   defp aliases do
@@ -49,7 +49,7 @@ defmodule Automerge.MixProject do
   end
 
   defp compile_gleam_tests(_) do
-    Mix.Tasks.Compile.Gleam.compile_package(:automerge, true)
+    Mix.Tasks.Compile.Gleam.compile_package(:gleam_automerge, true)
   end
 
   # Gleam-only hex packages ship without a mix.exs, so Mix can't compile their
@@ -114,7 +114,7 @@ defmodule Automerge.MixProject do
 
   defp package do
     [
-      name: "automerge",
+      name: "gleam_automerge",
       description: "Gleam bindings for automerge-rs via Rustler NIF",
       links: %{"GitHub" => @github_url},
       licenses: ["MIT"],
