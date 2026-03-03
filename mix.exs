@@ -108,12 +108,14 @@ defmodule Automerge.MixProject do
       {:mix_gleam, "~> 0.6"},
       {:gleam_stdlib, "~> 0.69"},
       {:gleeunit, "~> 1.9", only: [:dev, :test]},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
     ]
   end
 
   defp package do
     [
       name: "automerge",
+      description: "Gleam bindings for automerge-rs via Rustler NIF",
       links: %{"GitHub" => @github_url},
       licenses: ["MIT"],
       files: ~w[src lib native mix.exs gleam.toml README.md LICENSE],
