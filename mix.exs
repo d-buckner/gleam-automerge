@@ -1,3 +1,36 @@
+# Custom compiler that ensures Gleam dependency artefacts (_gleam_artefacts/)
+# exist before the :gleam compiler runs. These artefacts are produced by
+# `gleam compile-package`, not by Mix's normal .erl compilation, so they must
+# be created explicitly. Running deps.compile first ensures mix_gleam's BEAM
+# is loaded so the subsequent :gleam step doesn't re-trigger dep compilation
+# and wipe the artefacts we just created.
+defmodule Mix.Tasks.Compile.GleamDeps do
+  use Mix.Task.Compiler
+
+  def run(_args) do
+    Mix.Task.run("deps.compile")
+
+    build_lib = Mix.Project.build_path() |> Path.join("lib")
+    deps = if Mix.env() == :test, do: [:gleam_stdlib, :gleeunit], else: [:gleam_stdlib]
+
+    for name <- deps do
+      dep_dir = Path.join("deps", "#{name}")
+      out = Path.join(build_lib, "#{name}")
+      artefacts = Path.join(out, "_gleam_artefacts")
+
+      if File.dir?(dep_dir) and not File.dir?(artefacts) do
+        File.mkdir_p!(out)
+        0 = Mix.shell().cmd(
+          "gleam compile-package --target erlang --no-beam" <>
+            " --package #{dep_dir} --out #{out} --lib #{build_lib}"
+        )
+      end
+    end
+
+    {:ok, []}
+  end
+end
+
 defmodule GleamAutomerge.MixProject do
   use Mix.Project
 
@@ -9,7 +42,7 @@ defmodule GleamAutomerge.MixProject do
       app: :gleam_automerge,
       version: @version,
       elixir: "~> 1.15",
-      compilers: [:gleam] ++ Mix.compilers(),
+      compilers: [:gleam_deps, :gleam] ++ Mix.compilers(),
       erlc_paths: erlc_paths(Mix.env()),
       erlc_include_path: "build/dev/erlang/gleam_automerge/include",
       prune_code_paths: false,
