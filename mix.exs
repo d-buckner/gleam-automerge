@@ -21,14 +21,12 @@ defmodule GleamAutomerge.MixProject do
   end
 
   defp erlc_paths(:test) do
-    ["src",
-     "build/dev/erlang/gleam_automerge/_gleam_artefacts",
+    ["build/dev/erlang/gleam_automerge/_gleam_artefacts",
      "build/dev/erlang/gleam_automerge/build",
      "build/dev/erlang/gleam_automerge_test/_gleam_artefacts"]
   end
   defp erlc_paths(_) do
-    ["src",
-     "build/dev/erlang/gleam_automerge/_gleam_artefacts",
+    ["build/dev/erlang/gleam_automerge/_gleam_artefacts",
      "build/dev/erlang/gleam_automerge/build"]
   end
 

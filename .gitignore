@@ -8,3 +8,6 @@ erl_crash.dump
 
 # Rust binary artifacts
 /target/
+
+# Gleam-compiled Erlang output
+src/*.erl
