@@ -1,7 +1,7 @@
 defmodule GleamAutomerge.MixProject do
   use Mix.Project
 
-  @version "0.1.1"
+  @version "0.1.2"
   @github_url "https://github.com/d-buckner/gleam-automerge"
 
   def project do
@@ -21,12 +21,14 @@ defmodule GleamAutomerge.MixProject do
   end
 
   defp erlc_paths(:test) do
-    ["build/dev/erlang/gleam_automerge/_gleam_artefacts",
+    ["src",
+     "build/dev/erlang/gleam_automerge/_gleam_artefacts",
      "build/dev/erlang/gleam_automerge/build",
      "build/dev/erlang/gleam_automerge_test/_gleam_artefacts"]
   end
   defp erlc_paths(_) do
-    ["build/dev/erlang/gleam_automerge/_gleam_artefacts",
+    ["src",
+     "build/dev/erlang/gleam_automerge/_gleam_artefacts",
      "build/dev/erlang/gleam_automerge/build"]
   end
 
