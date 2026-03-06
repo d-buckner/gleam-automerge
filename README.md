@@ -62,14 +62,11 @@ end
 
 ## Building from source
 
-Requires Rust. Set `AUTOMERGE_BUILD=1` to compile the NIF locally:
+Requires Rust. Set `AUTOMERGE_BUILD=1` to compile the NIF locally instead of
+downloading a precompiled binary:
 
 ```sh
-# Gleam
-AUTOMERGE_BUILD=1 gleam test
-
-# Mix
-AUTOMERGE_BUILD=1 mix gleam.test
+AUTOMERGE_BUILD=1 mix compile
 ```
 
 ## License
