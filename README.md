@@ -39,8 +39,8 @@ let state_b = gleam_automerge.new_sync_state()
 
 // Exchange sync messages until both sides are in sync
 case gleam_automerge.generate_sync_message(doc, state_a) {
-  Ok(Some(msg)) -> gleam_automerge.receive_sync_message(doc, state_b, msg)
-  _ -> Nil
+  Some(msg) -> gleam_automerge.receive_sync_message(doc, state_b, msg)
+  None -> Ok(Nil)
 }
 ```
 
