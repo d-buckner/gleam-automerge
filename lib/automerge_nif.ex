@@ -1,4 +1,6 @@
 defmodule AutomergeNif do
+  @moduledoc false
+
   @version Mix.Project.config()[:version]
 
   use RustlerPrecompiled,

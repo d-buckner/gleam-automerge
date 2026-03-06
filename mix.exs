@@ -50,6 +50,7 @@ defmodule GleamAutomerge.MixProject do
       aliases: aliases(),
       deps: deps(),
       package: package(),
+      docs: docs(),
     ]
   end
 
@@ -142,6 +143,15 @@ defmodule GleamAutomerge.MixProject do
       {:gleam_stdlib, "~> 0.69"},
       {:gleeunit, "~> 1.9", only: [:dev, :test]},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+    ]
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      extras: ["README.md"],
+      source_url: @github_url,
+      source_ref: "v#{@version}",
     ]
   end
 
