@@ -11,7 +11,7 @@ defmodule Mix.Tasks.Compile.GleamDeps do
     Mix.Task.run("deps.compile")
 
     build_lib = Mix.Project.build_path() |> Path.join("lib")
-    deps = if Mix.env() == :test, do: [:gleam_stdlib, :gleeunit], else: [:gleam_stdlib]
+    deps = if Mix.env() == :prod, do: [:gleam_stdlib], else: [:gleam_stdlib, :gleeunit]
 
     for name <- deps do
       dep_dir = Path.join("deps", "#{name}")
